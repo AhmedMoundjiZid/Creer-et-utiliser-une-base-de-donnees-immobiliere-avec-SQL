@@ -5,13 +5,7 @@
 
 De fichiers bruts à une base relationnelle normalisée (3NF) hébergée dans le Cloud, puis **12 analyses SQL** pour répondre aux demandes de la direction, sur les **ventes immobilières du 1er semestre 2020 en France**.
 
-## En bref
-
-- **Quoi** : une base relationnelle de 5 tables (3NF) construite dans Databricks à partir de 34 169 ventes immobilières du 1er semestre 2020.
-- **Pourquoi** : répondre à 12 questions métier de la direction (prix au m², évolution des ventes, classements par région, département et commune).
-- **Résultat** : une base vérifiée (0 orphelin, comptes identiques aux fichiers sources) et 12 requêtes SQL documentées.
-
-**Compétences démontrées** : SQL (jointures, CTE, fonctions de fenêtre, agrégations) · modélisation de données (3NF, clés primaires et étrangères) · Databricks · qualité des données · RGPD (minimisation) · restitution des résultats
+![Schéma relationnel](docs/images/01_schema_relationnel.png)
 
 ---
 
@@ -142,6 +136,8 @@ Le dictionnaire complet (3 onglets : une ligne par donnée avec code, significat
 4. **Lancer les contrôles** : [`sql/controles.sql`](sql/controles.sql).
 5. **Lancer les analyses** : [`sql/requetes_analyse.sql`](sql/requetes_analyse.sql).
 
+<img src="docs/images/06_catalog.png" width="240" alt="Catalog Databricks : schéma dataimmo et ses 5 tables">
+
 ## Contrôles qualité
 
 | Contrôle | Résultat attendu |
@@ -150,6 +146,8 @@ Le dictionnaire complet (3 onglets : une ligne par donnée avec code, significat
 | Orphelins sur les 4 relations (`LEFT JOIN … IS NULL`) | 0 partout |
 | Codes postaux commençant par `0` conservés | 2 067 |
 | Clé commune différente de département + commune | 0 |
+
+![Contrôles](docs/images/05_controles_orphelins.png)
 
 ## Les 12 analyses
 
@@ -169,6 +167,12 @@ Toutes les analyses portent sur le **1er semestre 2020**.
 | D10 | Écart de prix au m² entre 2 pièces et 3 pièces | 2 CTE, `CROSS JOIN` | 3 pièces : **13,1 % moins cher** |
 | D11 | Valeur moyenne du top 3 des communes de 5 départements | CTE, `ROW_NUMBER() OVER (PARTITION BY …)` | Saint-Jean-Cap-Ferrat : 968 750 € |
 | D12 | 20 communes avec le plus de ventes pour 1 000 habitants (plus de 10 000 hab.) | Jointure INSEE, calcul de ratio | Paris 2e : 5,8 ventes pour 1 000 hab. |
+
+Captures de quelques résultats :
+
+| D03 | D07 | D10 |
+|---|---|---|
+| ![D03](docs/images/02_D03.png) | ![D07](docs/images/03_D07.png) | ![D10](docs/images/04_D10.png) |
 
 ## Exemple : top 3 des communes par département
 
@@ -223,7 +227,14 @@ dataimmo-sql-databricks/
 ├── LICENSE
 ├── .gitignore
 ├── docs/
-│   └── dictionnaire_de_donnees.xlsx
+│   ├── dictionnaire_de_donnees.xlsx
+│   └── images/
+│       ├── 01_schema_relationnel.png
+│       ├── 02_D03.png
+│       ├── 03_D07.png
+│       ├── 04_D10.png
+│       ├── 05_controles_orphelins.png
+│       └── 06_catalog.png
 ├── sql/
 │   ├── controles.sql
 │   └── requetes_analyse.sql
